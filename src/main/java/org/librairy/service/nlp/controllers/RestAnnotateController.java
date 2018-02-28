@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.avro.AvroRemoteException;
+import org.librairy.service.nlp.facade.model.NlpService;
 import org.librairy.service.nlp.facade.rest.model.Annotation;
 import org.librairy.service.nlp.facade.rest.model.AnnotationRequest;
 import org.librairy.service.nlp.facade.rest.model.AnnotationResult;
 import org.librairy.service.nlp.service.IXAService;
+import org.librairy.service.nlp.service.NLPServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,7 @@ public class RestAnnotateController {
     private static final Logger LOG = LoggerFactory.getLogger(RestAnnotateController.class);
 
     @Autowired
-    IXAService service;
+    NlpService service;
 
     @PostConstruct
     public void setup(){

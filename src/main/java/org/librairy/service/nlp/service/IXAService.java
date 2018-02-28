@@ -19,13 +19,14 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-@Component
-public class IXAService implements org.librairy.service.nlp.facade.model.NlpService {
+public class IXAService  {
 
     private static final Logger LOG = LoggerFactory.getLogger(org.librairy.service.nlp.service.IXAService.class);
 
@@ -47,9 +48,11 @@ public class IXAService implements org.librairy.service.nlp.facade.model.NlpServ
     private Properties annotateProperties;
     private Annotate posAnnotator;
 
+    public IXAService(String resourceFolder){
+        this.resourceFolder = resourceFolder;
+    }
 
-    @PostConstruct
-    public void setup() throws IOException {
+    public void setup() {
 
         model              = Paths.get(resourceFolder,"morph-models-1.5.0/en/en-pos-perceptron-autodict01-conll09.bin").toFile().getAbsolutePath();
         lemmatizerModel    = Paths.get(resourceFolder,"morph-models-1.5.0/en/en-lemma-perceptron-conll09.bin").toFile().getAbsolutePath();
@@ -77,13 +80,31 @@ public class IXAService implements org.librairy.service.nlp.facade.model.NlpServ
         annotateProperties.setProperty("multiwords", multiwords);
         annotateProperties.setProperty("dictag", dictag);
 
-        this.posAnnotator    = new Annotate(annotateProperties);
+        try {
+            this.posAnnotator    = new Annotate(annotateProperties);
+        } catch (IOException e) {
+            throw new RuntimeException("Error initializing IXA Pipes", e);
+        }
 
     }
 
-    @Override
     public String process(String text, List<PoS> filter, Form form) throws AvroRemoteException {
 
+//        StringBuilder result = new StringBuilder();
+//        Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
+//        while (matcher.find()){
+//            result.append(analyze(text,filter).stream()
+//                    .map(term-> {
+//                        switch (form){
+//                            case LEMMA: return Strings.isNullOrEmpty(term.getLemma())? term.getStr() : term.getLemma().toLowerCase();
+//                            case STEM:  return Strings.isNullOrEmpty(term.getStr())? term.getStr() : term.getStr();
+//                            default: return term.getStr().toLowerCase();
+//                        }
+//                    })
+//                    .collect(Collectors.joining(" ")));
+//        }
+//        return result.toString();
+//
         return analyze(text,filter).stream()
                 .map(term-> {
                     switch (form){
@@ -95,9 +116,13 @@ public class IXAService implements org.librairy.service.nlp.facade.model.NlpServ
                 .collect(Collectors.joining(" "));
     }
 
-    @Override
+
     public List<Annotation> annotate(String text, List<PoS> filter) throws AvroRemoteException {
-        List<Term> terms = analyze(text, filter);
+        List<Term> terms = new ArrayList<>();
+        Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
+        while (matcher.find()){
+            terms.addAll(analyze(text, filter));
+        }
         return terms.stream()
                 .map(term -> {
 

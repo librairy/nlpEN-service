@@ -1,5 +1,6 @@
 package org.librairy.service.nlp.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.librairy.service.nlp.facade.model.Annotation;
@@ -18,16 +19,18 @@ import java.util.List;
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = IXAService.class)
-@WebAppConfiguration
 public class IXAServiceTest {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(IXAServiceTest.class);
 
-    @Autowired
-    IXAService service;
+    private IXAService service;
+
+    @Before
+    public void setup(){
+        service = new IXAService("src/main/bin");
+        service.setup();
+    }
 
     @Test
     public void annotation() throws IOException {
