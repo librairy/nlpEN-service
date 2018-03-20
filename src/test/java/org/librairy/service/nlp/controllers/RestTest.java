@@ -61,7 +61,7 @@ public class RestTest {
 
         List<PoS> types = Arrays.asList(new PoS[]{PoS.NOUN, PoS.VERB});
         String text = "sample text";
-        Form form = Form.STEM;
+        Form form = Form.LEMMA;
         ProcessRequest req = new ProcessRequest(text,types,form);
 
         HttpResponse<JsonNode> response = Unirest.post("http://localhost:7777/process")
