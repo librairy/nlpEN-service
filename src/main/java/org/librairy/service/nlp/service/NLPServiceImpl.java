@@ -25,8 +25,7 @@ public class NLPServiceImpl implements org.librairy.service.nlp.facade.model.Nlp
 
     @Override
     public String process(String text, List<PoS> filter, Form form) throws AvroRemoteException {
-        if (text.length() > 500) return serviceManager.getCoreService(Thread.currentThread()).process(text,filter,form);
-        return serviceManager.getIXAService(Thread.currentThread()).process(text,filter,form);
+        return serviceManager.getCoreService(Thread.currentThread()).process(text,filter,form);
     }
 
     @Override
