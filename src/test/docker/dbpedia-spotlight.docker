@@ -1,0 +1,1 @@
+docker run -i -p --name dbpedia 2222:80 dbpedia/spotlight-english spotlight.sh

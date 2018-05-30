@@ -5,6 +5,7 @@ import com.google.common.io.Files;
 import eus.ixa.ixa.pipe.pos.Annotate;
 import eus.ixa.ixa.pipe.pos.CLI;
 import ixa.kaflib.KAFDocument;
+import ixa.kaflib.Mark;
 import ixa.kaflib.Term;
 import org.apache.avro.AvroRemoteException;
 import org.librairy.service.nlp.facade.model.Annotation;
@@ -91,21 +92,6 @@ public class IXAService  {
 
     public String process(String text, List<PoS> filter, Form form) throws AvroRemoteException {
 
-//        StringBuilder result = new StringBuilder();
-//        Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
-//        while (matcher.find()){
-//            result.append(analyze(text,filter).stream()
-//                    .map(term-> {
-//                        switch (form){
-//                            case LEMMA: return Strings.isNullOrEmpty(term.getLemma())? term.getStr() : term.getLemma().toLowerCase();
-//                            case STEM:  return Strings.isNullOrEmpty(term.getStr())? term.getStr() : term.getStr();
-//                            default: return term.getStr().toLowerCase();
-//                        }
-//                    })
-//                    .collect(Collectors.joining(" ")));
-//        }
-//        return result.toString();
-//
         return analyze(text,filter).stream()
                 .map(term-> {
                     switch (form){
@@ -172,23 +158,6 @@ public class IXAService  {
             newLp.setBeginTimestamp();
             posAnnotator.annotatePOSToKAF(kaf);
 
-
-            // Debug
-//            kaf.getAnnotations(KAFDocument.AnnotationType.TERM).stream().map( annotation -> (Term) annotation).forEach(term -> System.out.println(term.getStr() + "\t " + term.getLemma() +"\t " + term.getPos()));
-            //System.out.println(posAnnotator.annotatePOSToCoNLL(kaf));
-
-//            // Named-Entity Annotator
-//            final eus.ixa.ixa.pipe.nerc.Annotate neAnnotator = new eus.ixa.ixa.pipe.nerc.Annotate(annotateProperties);
-//            neAnnotator.annotateNEsToKAF(kaf);
-//
-//            for(KAFDocument.AnnotationType aType : KAFDocument.AnnotationType.values()){
-//                List<Annotation> out = kaf.getAnnotations(aType);
-//                System.out.println("Annotations '" + aType.name()+"' found: " + out.size());
-//            }
-
-
-
-
             // Filtering
             List<String> postags = filter.stream().flatMap( type -> PoSTranslator.toTermPoS(type).stream()).collect(Collectors.toList());
 
@@ -196,7 +165,6 @@ public class IXAService  {
                     .map(annotation -> (Term) annotation)
                     .filter(term -> postags.isEmpty() || postags.contains(term.getPos()))
                     .collect(Collectors.toList());
-
 
             breader.close();
         } catch (IOException e) {
