@@ -4,6 +4,7 @@ import org.apache.avro.AvroRemoteException;
 import org.librairy.service.nlp.facade.model.Annotation;
 import org.librairy.service.nlp.facade.model.Form;
 import org.librairy.service.nlp.facade.model.PoS;
+import org.librairy.service.nlp.facade.model.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class NLPServiceImpl implements org.librairy.service.nlp.facade.model.Nlp
     @Override
     public List<Annotation> annotate(String text, List<PoS> filter) throws AvroRemoteException {
         return serviceManager.getIXAService(Thread.currentThread()).annotate(text,filter);
+    }
+
+    @Override
+    public List<Token> group(String text, List<PoS> filter) throws AvroRemoteException {
+        return serviceManager.getCoreService(Thread.currentThread()).group(text,filter);
     }
 
 }

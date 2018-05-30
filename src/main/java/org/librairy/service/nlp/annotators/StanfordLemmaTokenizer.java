@@ -1,9 +1,11 @@
 package org.librairy.service.nlp.annotators;
 
+import com.google.common.escape.Escaper;
+import com.google.common.escape.Escapers;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import org.librairy.service.nlp.facade.model.PoS;
-import org.springframework.stereotype.Component;
+import org.librairy.service.nlp.facade.model.Token;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +14,16 @@ import java.util.stream.Collectors;
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
 public class StanfordLemmaTokenizer {
+
+
+    private final Escaper escaper = Escapers.builder()
+            .addEscape('\'',"")
+            .addEscape('\"',"")
+            .addEscape('('," ")
+            .addEscape(')'," ")
+            .addEscape('['," ")
+            .addEscape(']'," ")
+            .build();
 
     public List<Token> tokenize(Annotation annotation)
     {
@@ -22,9 +34,8 @@ public class StanfordLemmaTokenizer {
                 .map(coreLabel -> {
                     Token token = new Token();
                     token.setPos(translateFrom(coreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class).toLowerCase()));
-                    token.setWord(coreLabel.get(CoreAnnotations.LemmaAnnotation.class).toLowerCase());
-                    //token.setStopWord(coreLabel.get(StopWordAnnotatorWrapper.class).first);
-                    token.setStopWord(false);
+                    token.setLemma(escaper.escape(coreLabel.get(CoreAnnotations.LemmaAnnotation.class).toLowerCase()));
+                    token.setTarget(coreLabel.originalText());
                     return token;
                 })
                 .collect(Collectors.toList());
