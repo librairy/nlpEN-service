@@ -6,9 +6,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.avro.AvroRemoteException;
 import org.librairy.service.nlp.facade.model.NlpService;
-import org.librairy.service.nlp.facade.rest.model.Annotation;
-import org.librairy.service.nlp.facade.rest.model.AnnotationsRequest;
-import org.librairy.service.nlp.facade.rest.model.AnnotationsResult;
+import org.librairy.service.nlp.facade.rest.model.TokensRequest;
+import org.librairy.service.nlp.facade.rest.model.TokensResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/annotations")
-@Api(tags="/annotations", description="handle annotations from a text")
-public class RestAnnotateController {
+@RequestMapping("/tokens")
+@Api(tags = "/tokens", description = "handle tokens from a text")
+public class RestTokensController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RestAnnotateController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestTokensController.class);
 
     @Autowired
     NlpService service;
@@ -44,15 +41,14 @@ public class RestAnnotateController {
 
     }
 
-    @ApiOperation(value = "create annotations from a given text", nickname = "postAnnotate", response=AnnotationsResult.class)
+    @ApiOperation(value = "create tokens from a given text", nickname = "postProcess", response=TokensResult.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = AnnotationsResult.class),
+            @ApiResponse(code = 200, message = "Success", response = TokensResult.class),
     })
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<AnnotationsResult> analyze(@RequestBody AnnotationsRequest request)  {
+    public ResponseEntity<TokensResult> analyze(@RequestBody TokensRequest request)  {
         try {
-            List<Annotation> annotations = service.annotations(request.getText(), request.getFilter(), request.getMultigrams(), request.getReferences()).stream().map(a -> new Annotation(a)).collect(Collectors.toList());
-            return new ResponseEntity(new AnnotationsResult(annotations), HttpStatus.OK);
+            return new ResponseEntity(new TokensResult(service.tokens(request.getText(), request.getFilter(), request.getForm(), request.getMultigrams())),HttpStatus.OK);
         } catch (AvroRemoteException e) {
             return new ResponseEntity("internal service seems down", HttpStatus.FAILED_DEPENDENCY);
         } catch (Exception e){

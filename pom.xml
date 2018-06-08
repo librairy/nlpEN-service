@@ -4,7 +4,7 @@
  
   <groupId>org.librairy.service</groupId>
   <artifactId>nlp-en-service</artifactId>
-  <version>0.2</version>
+  <version>1.1</version>
   <packaging>jar</packaging>
   <name>nlp-en-service</name>
   
@@ -36,6 +36,8 @@
 	  <!-- Project Dependencies -->
 	  <commons-lang3.version>3.5</commons-lang3.version>
 	  <coreNlpExtensions.version>1.0</coreNlpExtensions.version>
+	  <httpclient.version>4.5.5</httpclient.version>
+	  <io.version>2.6</io.version>
 	  <joda.version>2.9.9</joda.version>
 	  <junit.version>4.12</junit.version>
 	  <ixa.pos.version>1.5.2</ixa.pos.version>
@@ -91,6 +93,24 @@
 				  <artifactId>ixa-pipe-nerc</artifactId>
 				  <version>${ixa.nerc.version}</version>
 			  </dependency>
+
+			  <!-- REST Dependency -->
+			  <dependency>
+				  <groupId>com.mashape.unirest</groupId>
+				  <artifactId>unirest-java</artifactId>
+				  <version>${unirest.version}</version>
+			  </dependency>
+			  <dependency>
+				  <groupId>org.apache.httpcomponents</groupId>
+				  <artifactId>httpclient</artifactId>
+				  <version>${httpclient.version}</version>
+			  </dependency>
+			  <dependency>
+				  <groupId>commons-io</groupId>
+				  <artifactId>commons-io</artifactId>
+				  <version>${io.version}</version>
+			  </dependency>
+
 
 			  <!-- Stanford Libraries -->
 			  <dependency>
@@ -164,17 +184,6 @@
 				  <artifactId>spring-test</artifactId>
 				  <version>${spring.version}</version>
 			  </dependency>
-			  <dependency>
-				  <groupId>com.mashape.unirest</groupId>
-				  <artifactId>unirest-java</artifactId>
-				  <version>${unirest.version}</version>
-				  <exclusions>
-					  <exclusion>
-						  <groupId>org.json</groupId>
-						  <artifactId>json</artifactId>
-					  </exclusion>
-				  </exclusions>
-			  </dependency>
 
 		  </dependencies>
 	  </dependencyManagement>
@@ -246,6 +255,20 @@
 			  <artifactId>lucene-analyzers-common</artifactId>
 		  </dependency>
 
+		  <!-- REST Dependency -->
+		  <dependency>
+			  <groupId>com.mashape.unirest</groupId>
+			  <artifactId>unirest-java</artifactId>
+		  </dependency>
+		  <dependency>
+			  <groupId>org.apache.httpcomponents</groupId>
+			  <artifactId>httpclient</artifactId>
+		  </dependency>
+		  <dependency>
+			  <groupId>commons-io</groupId>
+			  <artifactId>commons-io</artifactId>
+		  </dependency>
+
 		  <!-- Unit tests -->
 		  <dependency>
 			  <groupId>junit</groupId>
@@ -286,6 +309,12 @@
 			  <groupId>org.springframework.boot</groupId>
 			  <artifactId>spring-boot-starter-test</artifactId>
 			  <scope>test</scope>
+			  <exclusions>
+				  <exclusion>
+					  <groupId>com.vaadin.external.google</groupId>
+					  <artifactId>android-json</artifactId>
+				  </exclusion>
+			  </exclusions>
 		  </dependency>
 		  <dependency>
 			  <groupId>com.jayway.jsonpath</groupId>
@@ -301,12 +330,6 @@
 		  <dependency>
 			  <groupId>ch.qos.logback</groupId>
 			  <artifactId>logback-core</artifactId>
-		  </dependency>
-
-		  <dependency>
-			  <groupId>com.mashape.unirest</groupId>
-			  <artifactId>unirest-java</artifactId>
-			  <scope>test</scope>
 		  </dependency>
 
 	  </dependencies>
@@ -342,9 +365,9 @@
 				  <artifactId>maven-surefire-plugin</artifactId>
 				  <version>2.11</version>
 				  <configuration>
-					  <includes>
+					  <excludes>
 						  <exclude>%regex[.*IntTest.*]</exclude>
-					  </includes>
+					  </excludes>
 				  </configuration>
 			  </plugin>
 

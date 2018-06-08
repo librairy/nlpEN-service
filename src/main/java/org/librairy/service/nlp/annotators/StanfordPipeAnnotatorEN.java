@@ -6,9 +6,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -18,7 +16,7 @@ import java.util.Properties;
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-public class StanfordAnnotatorEN {
+public class StanfordPipeAnnotatorEN {
     /**
      *
      CC Coordinating conjunction
@@ -59,7 +57,7 @@ public class StanfordAnnotatorEN {
      WRB Whadverb
      */
 
-    private static final Logger LOG = LoggerFactory.getLogger(StanfordAnnotatorEN.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StanfordPipeAnnotatorEN.class);
 
     //adding extra terms to standard lucene listByExtension
     public static final String customStopWordList = "" +
@@ -92,7 +90,7 @@ public class StanfordAnnotatorEN {
 
     private StanfordCoreNLP pipeline;
 
-    public StanfordAnnotatorEN() {
+    public StanfordPipeAnnotatorEN() {
 
         Properties props;
         props = new Properties();

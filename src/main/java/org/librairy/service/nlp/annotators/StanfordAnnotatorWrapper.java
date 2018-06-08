@@ -1,5 +1,7 @@
 package org.librairy.service.nlp.annotators;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Strings;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -13,19 +15,19 @@ import java.util.stream.Collectors;
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-public class StanfordLemmaTokenizer {
+public class StanfordAnnotatorWrapper {
 
 
     private final Escaper escaper = Escapers.builder()
             .addEscape('\'',"")
             .addEscape('\"',"")
-            .addEscape('('," ")
-            .addEscape(')'," ")
-            .addEscape('['," ")
-            .addEscape(']'," ")
+            .addEscape('(',"")
+            .addEscape(')',"")
+            .addEscape('[',"")
+            .addEscape(']',"")
             .build();
 
-    public List<Token> tokenize(Annotation annotation)
+    public List<org.librairy.service.nlp.facade.model.Annotation> tokenize(Annotation annotation)
     {
         // Iterate over all of the sentences found
         return annotation.get(CoreAnnotations.SentencesAnnotation.class)
@@ -34,10 +36,16 @@ public class StanfordLemmaTokenizer {
                 .map(coreLabel -> {
                     Token token = new Token();
                     token.setPos(translateFrom(coreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class).toLowerCase()));
-                    token.setLemma(escaper.escape(coreLabel.get(CoreAnnotations.LemmaAnnotation.class).toLowerCase()));
+                    token.setLemma(coreLabel.get(CoreAnnotations.LemmaAnnotation.class).toLowerCase());
                     token.setTarget(coreLabel.originalText());
-                    return token;
+
+                    org.librairy.service.nlp.facade.model.Annotation tokenAnnotation = new org.librairy.service.nlp.facade.model.Annotation();
+                    tokenAnnotation.setToken(token);
+                    tokenAnnotation.setOffset(Long.valueOf(coreLabel.get(CoreAnnotations.CharacterOffsetBeginAnnotation.class)));
+
+                    return tokenAnnotation;
                 })
+                .filter(a -> (!Strings.isNullOrEmpty(a.getToken().getLemma())))
                 .collect(Collectors.toList());
     }
 

@@ -1,16 +1,17 @@
 package org.librairy.service.nlp.service;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import eus.ixa.ixa.pipe.pos.Annotate;
 import eus.ixa.ixa.pipe.pos.CLI;
 import ixa.kaflib.KAFDocument;
-import ixa.kaflib.Mark;
 import ixa.kaflib.Term;
 import org.apache.avro.AvroRemoteException;
 import org.librairy.service.nlp.facade.model.Annotation;
 import org.librairy.service.nlp.facade.model.Form;
 import org.librairy.service.nlp.facade.model.PoS;
+import org.librairy.service.nlp.facade.model.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,7 +91,7 @@ public class IXAService  {
 
     }
 
-    public String process(String text, List<PoS> filter, Form form) throws AvroRemoteException {
+    public String tokens(String text, List<PoS> filter, Form form) throws AvroRemoteException {
 
         return analyze(text,filter).stream()
                 .map(term-> {
@@ -103,7 +104,7 @@ public class IXAService  {
     }
 
 
-    public List<Annotation> annotate(String text, List<PoS> filter) throws AvroRemoteException {
+    public List<Annotation> annotations(String text, List<PoS> filter) throws AvroRemoteException {
         List<Term> terms = new ArrayList<>();
         Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
         while (matcher.find()){
@@ -112,19 +113,25 @@ public class IXAService  {
         return terms.stream()
                 .map(term -> {
 
-                    Annotation annotation = new Annotation();
-                    annotation.setTarget(term.getStr());
+                    Token token = new Token();
+                    token.setTarget(term.getStr());
+                    token.setLemma(!Strings.isNullOrEmpty(term.getLemma())?term.getLemma():"");
 
-                    annotation.setTermcase(!Strings.isNullOrEmpty(term.getCase())?term.getCase():"");
-                    annotation.setLemma(!Strings.isNullOrEmpty(term.getLemma())?term.getLemma():"");
-                    annotation.setForm(!Strings.isNullOrEmpty(term.getForm())?term.getForm():"");
-                    annotation.setMorphoFeat(!Strings.isNullOrEmpty(term.getMorphofeat())?term.getMorphofeat():"");
-                    annotation.setSentiment("");
-                    annotation.setForm(!Strings.isNullOrEmpty(term.getForm())?term.getForm():"");
-                    annotation.setType(!Strings.isNullOrEmpty(term.getType())?term.getType():"");
-                    annotation.setPos(!Strings.isNullOrEmpty(term.getPos())?PoSTranslator.toPoSTag(term.getPos()).name():"");
-                    annotation.setPara("");
-                    annotation.setOffset("");
+                    if ((CharMatcher.javaLetter().matchesAllOf(term.getStr())) && CharMatcher.javaDigit().matchesAllOf(term.getLemma())){
+                        // special case:
+                        // target = first
+                        // lemma = 1
+                        token.setLemma(term.getStr());
+                    }
+
+                    token.setMorphoFeat(!Strings.isNullOrEmpty(term.getMorphofeat())?term.getMorphofeat():"");
+                    token.setPos(!Strings.isNullOrEmpty(term.getPos())?PoSTranslator.toPoSTag(term.getPos()):PoS.NOUN);
+                    token.setType(!Strings.isNullOrEmpty(term.getType())?term.getType():"");
+
+                    Annotation annotation = new Annotation();
+                    if (term.getSentiment() != null) annotation.setSentiment(term.getSentiment().getPolarity());
+                    annotation.setToken(token);
+                    annotation.setOffset(Long.valueOf(term.getSpan().getTargets().get(0).getOffset()));
 
                     return annotation;
                 })

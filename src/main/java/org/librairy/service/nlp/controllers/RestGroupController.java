@@ -10,6 +10,8 @@ import org.librairy.service.nlp.facade.rest.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,8 +22,8 @@ import javax.annotation.PreDestroy;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/group")
-@Api(tags = "/group", description = "bag of tokens from a text")
+@RequestMapping("/groups")
+@Api(tags = "/groups", description = "handle bag of tokens from a text")
 public class RestGroupController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestGroupController.class);
@@ -39,16 +41,19 @@ public class RestGroupController {
 
     }
 
-    @ApiOperation(value = "filter words by PoS and return them in a specific form", nickname = "postGroup", response= GroupResult.class)
+    @ApiOperation(value = "create annotations and group by frequency from a given text", nickname = "postGroup", response= GroupsResult.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = GroupResult.class),
+            @ApiResponse(code = 200, message = "Success", response = GroupsResult.class),
     })
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public GroupResult group(@RequestBody GroupRequest request)  {
+    public ResponseEntity<GroupsResult> group(@RequestBody GroupsRequest request)  {
         try {
-            return new GroupResult(service.group(request.getText(), request.getFilter()).stream().map(t -> new Token(t)).collect(Collectors.toList()));
+            GroupsResult groups = new GroupsResult(service.groups(request.getText(), request.getFilter(), request.getMultigrams(), request.getReferences()).stream().map(t -> new Group(t)).collect(Collectors.toList()));
+            return new ResponseEntity( groups, HttpStatus.OK);
         } catch (AvroRemoteException e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity("internal service seems down", HttpStatus.FAILED_DEPENDENCY);
+        } catch (Exception e){
+            return new ResponseEntity("internal error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

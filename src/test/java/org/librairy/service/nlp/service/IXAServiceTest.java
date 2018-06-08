@@ -39,7 +39,7 @@ public class IXAServiceTest {
 
         List<PoS> filter = Collections.emptyList();
 
-        List<Annotation> annotations = service.annotate(text, filter);
+        List<Annotation> annotations = service.annotations(text, filter);
 
         annotations.forEach(annotation -> LOG.info(annotation.toString()));
 
