@@ -56,7 +56,7 @@ public class NLPServiceImpl implements org.librairy.service.nlp.facade.model.Nlp
         return grouped.entrySet().stream().map( entry -> {
             org.librairy.service.nlp.facade.model.Annotation annotation = entry.getKey();
             Group group = new Group();
-            group.setLemma(annotation.getToken().getLemma());
+            group.setToken(annotation.getToken().getLemma());
             group.setUri(annotation.getUri());
             group.setPos(annotation.getToken().getPos());
             group.setFreq(entry.getValue());
