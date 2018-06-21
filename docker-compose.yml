@@ -3,6 +3,8 @@ services:
   dbpedia-spotlight:
     image: librairy/dbpedia-en:latest
     restart: always
+    environment:
+     - JAVA_OPTS='-Xmx16g'
   nlp-en-service:
     image: librairy/nlp-en-service:latest
     restart: always
