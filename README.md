@@ -42,6 +42,13 @@ To change configuration, just edit the [docker-compose.yml](docker-compose.yml) 
 | `AVRO port`  | Internal AVRO port is 65111  |
 
 
+## Services
+All services can include lemmatizer actions, part-of-speech tagging and even n-grams identifications:
+- `/annotations` : create an annotation for each word in a given text. 
+- `/tokens`: modify a given text to only contains valid token as expressed in request.
+- `/groups`: return a bag-of-words from a given text.
+
+
 ## Reference
 
 You can use the following to cite the service:
