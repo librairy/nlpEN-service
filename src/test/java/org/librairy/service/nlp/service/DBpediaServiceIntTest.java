@@ -1,13 +1,17 @@
 package org.librairy.service.nlp.service;
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.librairy.service.nlp.facade.model.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
 
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
@@ -33,5 +37,62 @@ public class DBpediaServiceIntTest {
         annotations.forEach(annotation -> LOG.info(annotation.toString()));
 
 //        Assert.assertEquals(2, annotations.size());
+    }
+
+    @Test
+    public void corpus() throws IOException {
+
+        String filePath = "/Users/cbadenes/Corpus/wikipedia-articles/10k-articles.jsonl.gz";
+
+        DBpediaService service = new DBpediaService("http://localhost:2222/rest",0.8);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader( new GZIPInputStream( new FileInputStream(filePath))));
+        String line = null;
+        ConcurrentHashMap<String,Integer> ngrams = new ConcurrentHashMap<>();
+        AtomicInteger counter = new AtomicInteger();
+
+        ParallelExecutor executor = new ParallelExecutor();
+        while((line = reader.readLine()) != null){
+            final String json = line;
+            executor.execute(() -> {
+                if (counter.incrementAndGet() % 100 == 0) LOG.info(counter.get() + " articles analyzed");
+
+                JSONObject article = new JSONObject(json);
+                String text = article.getString("text");
+
+
+                List<Annotation> annotations = service.annotations(text);
+
+                annotations.stream().filter(a -> a.getToken().getTarget().contains(" ")).forEach( a -> {
+                    Integer freq = 0;
+                    if (ngrams.containsKey(a.getToken().getTarget())) freq = ngrams.get(a.getToken().getTarget());
+                    freq += 1;
+                    ngrams.put(a.getToken().getTarget(), freq);
+                });
+
+            });
+
+        }
+
+        LOG.info("Corpus analyzed. Waiting to finish..");
+
+        executor.stop();
+
+        LOG.info("Saving results..");
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("target/ngrams.csv")));
+
+        ngrams.entrySet().stream().sorted((a,b) -> -a.getValue().compareTo(b.getValue())).forEach(entry -> {
+            try {
+                writer.write(entry.getKey()+"\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        writer.close();
+
+
+
     }
 }

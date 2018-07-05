@@ -1,0 +1,7 @@
+version: '2'
+services:
+  dbpedia-spotlight:
+    image: dbpedia/spotlight-english:latest
+    command: java -Dfile.encoding=UTF-8 -Xmx11G -Dthreads.max=6 -Dthreads.core=6 -jar /opt/spotlight/dbpedia-spotlight-nightly-build.jar /opt/spotlight/en  http://0.0.0.0:80/rest
+    ports:
+      - "2222:80"
