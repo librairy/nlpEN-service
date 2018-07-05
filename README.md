@@ -1,4 +1,4 @@
-# librAIry NLP for English
+# librAIry NLP toolkit for English texts
 
 `nlpEN-service` provides a fast and easy way to analyze texts from large document corpora by using both HTTP-Restful and AVRO API.
 
@@ -21,7 +21,7 @@ To run NLP-EN service using the default dataset:
 	```
 	git clone git@github.com:librairy/nlpEN-service.git
 	```
-1. Run the service: `docker-compose up -d`
+1. Run the service by: `docker-compose up -d`
 1. You should be able to monitor the progress by: `docker-compose logs -f`
 
 - The above command runs two services: DBpedia Spotlight and librAIry NLP-EN, and uses the settings specified within `docker-compose.yml`.
