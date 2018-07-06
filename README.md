@@ -44,9 +44,9 @@ To change configuration, just edit the [docker-compose.yml](docker-compose.yml) 
 
 ## Services
 All services can include lemmatizer actions, part-of-speech tagging and even n-grams identifications:
-- `/annotations` : create an annotation for each word in a given text. 
-- `/tokens`: modify a given text to only contains valid token as expressed in request.
-- `/groups`: return a bag-of-words from a given text.
+- `/annotations` : annotate each word in a given text. 
+- `/tokens`: modify a given text to only contains valid tokens as expressed in the request.
+- `/groups`: build a bag-of-words from a given text.
 
 
 ## Reference
