@@ -50,7 +50,6 @@
 	  <mockito.version>1.9.5</mockito.version>
 	  <stanford.version>3.5.2</stanford.version><!-- 3.6.0 -->
 	  <stanford.parser.version>1.0</stanford.parser.version>
-	  <testutils.version>1.0.0</testutils.version>
 	  <unirest.version>1.4.9</unirest.version>
       </properties>
   
@@ -175,11 +174,6 @@
 				  <version>${mockito.version}</version>
 			  </dependency>
 			  <dependency>
-				  <groupId>es.cbadenes.lab</groupId>
-				  <artifactId>test-utils</artifactId>
-				  <version>${testutils.version}</version>
-			  </dependency>
-			  <dependency>
 				  <groupId>org.springframework</groupId>
 				  <artifactId>spring-test</artifactId>
 				  <version>${spring.version}</version>
@@ -278,11 +272,6 @@
 		  <dependency>
 			  <groupId>org.mockito</groupId>
 			  <artifactId>mockito-all</artifactId>
-			  <scope>test</scope>
-		  </dependency>
-		  <dependency>
-			  <groupId>es.cbadenes.lab</groupId>
-			  <artifactId>test-utils</artifactId>
 			  <scope>test</scope>
 		  </dependency>
 		  <dependency>
