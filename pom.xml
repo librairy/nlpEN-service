@@ -365,7 +365,7 @@
 				  <configuration>
 					  <imageName>${dockerhub.user}/${project.build.finalName}</imageName>
 					  <serverId>dockerhub</serverId>
-					  <dockerDirectory>src/main/docker</dockerDirectory>
+					  <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
 					  <resources>
 						  <resource>
 							  <targetPath>/</targetPath>
@@ -374,7 +374,7 @@
 						  </resource>
 						  <resource>
 							  <targetPath>/bin</targetPath>
-							  <directory>src/main/bin</directory>
+							  <directory>${project.basedir}/src/main/bin</directory>
 							  <include>**</include>
 						  </resource>
 					  </resources>
