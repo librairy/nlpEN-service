@@ -102,4 +102,15 @@ public class ServiceManager {
 
     }
 
+    public void setResourceFolder(String resourceFolder) {
+        this.resourceFolder = resourceFolder;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    public void setThreshold(Double threshold) {
+        this.threshold = threshold;
+    }
 }

@@ -39,15 +39,20 @@ public class DBpediaService  {
     public List<Annotation> annotations (String text){
         List<Annotation> annotations = new ArrayList<>();
         Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
+        int groupIndex = 0;
         while (matcher.find()){
             String partialContent = matcher.group();
             Instant startAnnotation = Instant.now();
             List<Annotation> partialAnnotations = getDBpediaReferences(partialContent);
+            for(Annotation annotation : partialAnnotations){
+                annotation.setOffset((groupIndex*1000)+annotation.getOffset());
+            }
             annotations.addAll(partialAnnotations);
             Instant endAnnotation = Instant.now();
             LOG.debug("Annotated  in: " +
                     ChronoUnit.MINUTES.between(startAnnotation,endAnnotation) + "min " +
                     (ChronoUnit.SECONDS.between(startAnnotation,endAnnotation)%60) + "secs");
+            groupIndex++;
         }
         return annotations;
     }

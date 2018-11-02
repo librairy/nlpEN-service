@@ -1,1 +1,0 @@
-docker run -i --name dbpedia -p 2222:80 -e JAVA_OPTS='-Xmx16g' librairy/dbpedia-en

@@ -7,6 +7,7 @@ import eus.ixa.ixa.pipe.pos.Annotate;
 import eus.ixa.ixa.pipe.pos.CLI;
 import ixa.kaflib.KAFDocument;
 import ixa.kaflib.Term;
+import ixa.kaflib.WF;
 import org.apache.avro.AvroRemoteException;
 import org.librairy.service.nlp.facade.model.Annotation;
 import org.librairy.service.nlp.facade.model.Form;
@@ -107,8 +108,16 @@ public class IXAService  {
     public List<Annotation> annotations(String text, List<PoS> filter) throws AvroRemoteException {
         List<Term> terms = new ArrayList<>();
         Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
+        int groupIndex = 0;
         while (matcher.find()){
-            terms.addAll(analyze(text, filter));
+            String group = matcher.group();
+            List<Term> groupTerms = analyze(group, filter);
+            for(Term term: groupTerms){
+                WF target = term.getSpan().getTargets().get(0);
+                target.setOffset((groupIndex*1000)+target.getOffset());
+            }
+            terms.addAll(groupTerms);
+            groupIndex++;
         }
         return terms.stream()
                 .map(term -> {

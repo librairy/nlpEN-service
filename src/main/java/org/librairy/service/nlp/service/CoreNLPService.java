@@ -55,6 +55,7 @@ public class CoreNLPService {
 
         List<org.librairy.service.nlp.facade.model.Annotation> tokens = new ArrayList<>();
         Matcher matcher = Pattern.compile(".{1,1000}(,|.$)").matcher(text);
+        int groupIndex = 0;
         while (matcher.find()){
 
             String partialContent = matcher.group();
@@ -71,10 +72,14 @@ public class CoreNLPService {
                 Instant endTokenizer = Instant.now();
                 LOG.debug("Parsed  into " + annotations.size() + " annotations  in: " +
                         ChronoUnit.MINUTES.between(startTokenizer,endTokenizer) + "min " + (ChronoUnit.SECONDS.between(startTokenizer,endTokenizer)%60) + "secs");
+                for(org.librairy.service.nlp.facade.model.Annotation a: annotations){
+                    a.setOffset((groupIndex*1000)+a.getOffset());
+                }
                 tokens.addAll(annotations);
             }catch (Exception e){
                 LOG.error("Error tokenizing", e);
             }
+            groupIndex++;
 
         }
         if (filter.isEmpty()) return tokens;
