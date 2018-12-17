@@ -363,7 +363,7 @@
 				  <artifactId>docker-maven-plugin</artifactId>
 				  <version>0.4.11</version>
 				  <configuration>
-					  <imageName>registry.bdlab.minetur.es/${project.build.finalName}</imageName>
+					  <imageName>librairy/${project.build.finalName}</imageName>
 					  <serverId>dockerhub</serverId>
 					  <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
 					  <resources>
