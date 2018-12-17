@@ -4,7 +4,7 @@
  
   <groupId>org.librairy.service</groupId>
   <artifactId>nlp-en-service</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
   <name>nlp-en-service</name>
   
