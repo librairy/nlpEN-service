@@ -101,7 +101,21 @@ public class StanfordAnnotatorWrapper {
             case "proper_noun": return PoS.NOUN;
             case "adverb": return PoS.ADVERB;
             case "verb": return PoS.VERB;
-            default: return PoS.CONJUNCTION;
+            default:
+                if (posTag.startsWith("c")) return PoS.CONJUNCTION;
+                if (posTag.startsWith("d")) return PoS.ARTICLE;
+                if (posTag.startsWith("e")) return PoS.ARTICLE;
+                if (posTag.startsWith("i")) return PoS.PREPOSITION;
+                if (posTag.startsWith("j")) return PoS.ADJECTIVE;
+                if (posTag.startsWith("l")) return PoS.NOUN;
+                if (posTag.startsWith("m")) return PoS.ADVERB;
+                if (posTag.startsWith("n")) return PoS.NOUN;
+                if (posTag.startsWith("p")) return PoS.PRONOUN;
+                if (posTag.startsWith("r")) return PoS.ADVERB;
+                if (posTag.startsWith("u")) return PoS.INTERJECTION;
+                if (posTag.startsWith("v")) return PoS.VERB;
+                if (posTag.startsWith("w")) return PoS.ARTICLE;
+                return PoS.CONJUNCTION;
         }
     }
 }

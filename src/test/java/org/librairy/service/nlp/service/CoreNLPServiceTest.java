@@ -25,7 +25,7 @@ public class CoreNLPServiceTest {
     public void execute() throws AvroRemoteException {
 
         CoreNLPService coreService = new CoreNLPService();
-        coreService.setAnnotator(new StanfordWordnetPipeAnnotatorEN("src/main/bin/mwe/mweindex_wordnet3.0_semcor1.6.txt"));
+        coreService.setAnnotator(new StanfordWordnetPipeAnnotatorEN("src/main/bin"));
         coreService.setTokenizer(new StanfordAnnotatorWrapper());
 
 

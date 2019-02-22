@@ -35,7 +35,7 @@ public class MWETest {
     public void validateSentence() throws IOException {
 
         // get handle to file containing MWE index data, // e.g., mweindex_wordnet3.0_Semcor1.6.data
-        File idxData = new File("src/main/bin/mwe/mweindex_wordnet3.0_Semcor1.6.data");
+        File idxData = new File("src/main/bin/mwe/mweindex_wordnet3.0_Semcor1.6.txt");
 
         // construct an MWE index and open it
         IMWEIndex index = new MWEIndex(idxData);
@@ -68,7 +68,7 @@ public class MWETest {
     public void validateText(){
 
 
-        String index    = new File("src/main/bin/mwe/mweindex_wordnet3.0_Semcor1.6.data").getAbsolutePath();
+        String index    = new File("src/main/bin/mwe/mweindex_wordnet3.0_Semcor1.6.txt").getAbsolutePath();
 
         String text     = "She looked up the world record.";
 
