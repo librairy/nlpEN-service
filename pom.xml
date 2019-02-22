@@ -69,6 +69,13 @@
 				  <version>${librairy.nlp.version}</version>
 			  </dependency>
 
+			  <!-- librAIry multi-word annotator -->
+			  <dependency>
+				  <groupId>org.librairy</groupId>
+				  <artifactId>multi-word-annotator</artifactId>
+				  <version>[1.0,)</version>
+			  </dependency>
+
 			  <!-- librAIry Swagger -->
 			  <dependency>
 				  <groupId>org.librairy</groupId>
@@ -195,6 +202,12 @@
 		  <dependency>
 			  <groupId>org.librairy</groupId>
 			  <artifactId>swagger</artifactId>
+		  </dependency>
+
+		  <!-- librAIry multi-word annotator -->
+		  <dependency>
+			  <groupId>org.librairy</groupId>
+			  <artifactId>multi-word-annotator</artifactId>
 		  </dependency>
 
 		  <!-- IXA-Pipes -->
@@ -412,6 +425,17 @@
 				  <updatePolicy>always</updatePolicy>
 			  </snapshots>
 		  </repository>
+
+		  <!-- librAIry Multi-Word Annotator Repository -->
+		  <repository>
+			  <id>librairy-multi-word-annotator</id>
+			  <url>https://raw.github.com/librairy/multi-word-annotator/mvn-repo/</url>
+			  <snapshots>
+				  <enabled>true</enabled>
+				  <updatePolicy>always</updatePolicy>
+			  </snapshots>
+		  </repository>
+
 
 	  </repositories>
 

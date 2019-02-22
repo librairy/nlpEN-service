@@ -3,10 +3,10 @@ package org.librairy.service.nlp.service;
 import com.google.common.base.Strings;
 import edu.stanford.nlp.pipeline.Annotation;
 import org.apache.avro.AvroRemoteException;
+import org.librairy.service.nlp.annotators.StanfordAnnotator;
 import org.librairy.service.nlp.annotators.StanfordAnnotatorWrapper;
 import org.librairy.service.nlp.annotators.StanfordPipeAnnotatorEN;
 import org.librairy.service.nlp.facade.model.Form;
-import org.librairy.service.nlp.facade.model.Group;
 import org.librairy.service.nlp.facade.model.PoS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,12 +28,12 @@ public class CoreNLPService {
     private static final Logger LOG = LoggerFactory.getLogger(CoreNLPService.class);
 
 
-    StanfordPipeAnnotatorEN annotator;
+    StanfordAnnotator annotator;
 
 
     StanfordAnnotatorWrapper tokenizer;
 
-    public void setAnnotator(StanfordPipeAnnotatorEN annotator) {
+    public void setAnnotator(StanfordAnnotator annotator) {
         this.annotator = annotator;
     }
 

@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.librairy.service.nlp.annotators.StanfordAnnotatorWrapper;
 import org.librairy.service.nlp.annotators.StanfordPipeAnnotatorEN;
+import org.librairy.service.nlp.annotators.StanfordWordnetPipeAnnotatorEN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,8 @@ public class ServiceManager {
     LoadingCache<String, IXAService> ixaServices;
 
     LoadingCache<String, CoreNLPService> coreServices;
+
+    LoadingCache<String, CoreNLPService> wordnetServices;
 
     LoadingCache<String, DBpediaService> dbpediaServices;
 
@@ -63,6 +66,19 @@ public class ServiceManager {
                             }
                         });
 
+        wordnetServices = CacheBuilder.newBuilder()
+                .maximumSize(100)
+                .build(
+                        new CacheLoader<String, CoreNLPService>() {
+                            public CoreNLPService load(String key) {
+                                LOG.info("Initializing CoreNLP with Wordnet service for thread: " + key);
+                                CoreNLPService coreService = new CoreNLPService();
+                                coreService.setAnnotator(new StanfordWordnetPipeAnnotatorEN(resourceFolder));
+                                coreService.setTokenizer(new StanfordAnnotatorWrapper());
+                                return coreService;
+                            }
+                        });
+
         dbpediaServices = CacheBuilder.newBuilder()
                 .maximumSize(100)
                 .build(
@@ -86,6 +102,16 @@ public class ServiceManager {
 
         try {
             return coreServices.get("thread"+thread.getId());
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public CoreNLPService getWordnetService(Thread thread) {
+
+        try {
+            return wordnetServices.get("thread"+thread.getId());
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }

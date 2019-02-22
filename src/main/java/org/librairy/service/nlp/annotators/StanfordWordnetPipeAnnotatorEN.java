@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * @author Badenes Olmedo, Carlos <cbadenes@fi.upm.es>
  */
-public class StanfordPipeAnnotatorEN implements StanfordAnnotator{
+public class StanfordWordnetPipeAnnotatorEN implements StanfordAnnotator{
     /**
      *
      CC Coordinating conjunction
@@ -58,7 +58,7 @@ public class StanfordPipeAnnotatorEN implements StanfordAnnotator{
      WRB Whadverb
      */
 
-    private static final Logger LOG = LoggerFactory.getLogger(StanfordPipeAnnotatorEN.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StanfordWordnetPipeAnnotatorEN.class);
 
     //adding extra terms to standard lucene listByExtension
     public static final String customStopWordList = "" +
@@ -91,13 +91,20 @@ public class StanfordPipeAnnotatorEN implements StanfordAnnotator{
 
     private StanfordCoreNLP pipeline;
 
-    public StanfordPipeAnnotatorEN() {
+    public StanfordWordnetPipeAnnotatorEN(String resourceFolder) {
 
         Properties props;
         props = new Properties();
         //props.put("annotators", "tokenize, cleanxml, ssplit, pos, lemma, stopword"); //"tokenize, ssplit, pos, lemma, ner, parse, dcoref"
         //props.put("annotators", "tokenize, ssplit, pos, lemma, stopword, ner"); //"tokenize, ssplit, pos,
-        props.put("annotators", "tokenize, ssplit, pos, lemma"); //"tokenize, ssplit, pos,
+        props.put("annotators", "tokenize, ssplit, pos, lemma, jmwe"); //"tokenize, ssplit, pos,
+
+        // jMWE
+        props.setProperty("customAnnotatorClass.jmwe", "edu.stanford.nlp.pipeline.JMWEAnnotator");
+        props.setProperty("customAnnotatorClass.jmwe.verbose", "false");
+        props.setProperty("customAnnotatorClass.jmwe.underscoreReplacement", "-");
+        props.setProperty("customAnnotatorClass.jmwe.indexData", Paths.get(resourceFolder,"mwe","mweindex_wordnet3.0_semcor1.6.txt").toFile().getAbsolutePath());
+        props.setProperty("customAnnotatorClass.jmwe.detector", "CompositeConsecutiveProperNouns");
 
         // Max length
         props.setProperty("parse.maxlen","100");
